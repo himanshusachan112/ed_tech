@@ -22,7 +22,7 @@ const paymentroutes=require("./routes/Payment")
 app.use(express.json())
 app.use(cookieparser());
 app.use(cors({
-    origin:"http://localhost:3000",
+    origin:"https://edupulses.netlify.app",
     credentials:true,
 }))
 app.use(fileupload({
