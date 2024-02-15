@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import logo from "../../assets/Logo/Logo-Full-Light.png"
+import edupulses from "../../assets/Logo/edupulses.webp"
 import { NavbarLinks } from '../../data/navbar-links'
 import { Link } from 'react-router-dom'
 import {IoIosArrowDropdownCircle} from 'react-icons/io'
@@ -35,7 +35,7 @@ const Navbar = () => {
   return (
     <div className='bg-black p-2 flex flex-row justify-between border-b-[1px] border-b-yellow-400'>
       <div>
-        <Link to="/"><img src={logo} className='w-[80%] h-[100%]' onClick={()=>{setcurrenttab("Home")}} alt=''></img></Link>
+        <Link to="/"><img src={edupulses} className='absolute top-[-5px]  w-[10%] h-[8%]' onClick={()=>{setcurrenttab("Home")}} alt=''></img></Link>
       </div>
       <div className='text-white flex flex-row gap-3'>
         {NavbarLinks.map((sublink,index)=>(
@@ -43,7 +43,7 @@ const Navbar = () => {
             <div key={index} onClick={()=>{setcurrenttab(`${sublink.title}`)}} className={`${sublink.title===currenttab?"text-yellow-300":""} flex flex-row group`}>
               <div>{sublink.title}</div>
               <div className='mt-1.5'><IoIosArrowDropdownCircle/></div>
-              <div className={`absolute invisible group-hover:visible `}>
+              <div className={ `absolute z-20 invisible group-hover:visible `}>
                 <div className='w-[20px] h-[20px] rotate-45 bg-yellow-500 mt-10 ml-5'>
                   
                 </div>
