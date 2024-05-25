@@ -12,7 +12,7 @@ exports.mailsender=async (email,title,body)=>{
         })
 
         let info=await transporter.sendMail({
-            from:"Himanshu Sachan || Study_Notion",
+            from:"NITASPACE",
             to:`${email}`,
             subject:`${title}`,
             html:`${body}`
