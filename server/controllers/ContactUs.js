@@ -1,7 +1,8 @@
 const { contactUsEmail } = require("../mailtemplates/contactFormRes")
-const mailsender = require("../utils/SendMail");
+const {mailsender} = require("../utils/SendMail");
 
 exports.contactUsController = async (req, res) => {
+  
   const { email, firstname, lastname, message, phoneNo, countrycode } = req.body
   console.log(req.body)
   try {
@@ -20,7 +21,7 @@ exports.contactUsController = async (req, res) => {
     console.log("Error message :", error.message)
     return res.json({
       success: false,
-      message: "Something went wrong...",
+      message: error,
     })
   }
 }
