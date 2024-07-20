@@ -172,7 +172,10 @@ const Homepage = () => {
 
 
       {/*Footer */}
+      <div className='text-white'>
       <Footer />
+      </div>
+   
 
     </div>
   )
