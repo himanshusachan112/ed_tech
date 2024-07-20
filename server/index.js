@@ -14,7 +14,8 @@ const authroutes=require("./routes/auth");
 const userroutes=require("./routes/user");
 const categoryroutes=require("./routes/category");
 const courseroutes=require("./routes/course");
-const paymentroutes=require("./routes/Payment")
+const paymentroutes=require("./routes/Payment");
+const contactUsRoute = require("./routes/Contact");
 
 
 
@@ -42,6 +43,7 @@ app.use("/api/v1/user",userroutes);
 app.use("/api/v1/category",categoryroutes);
 app.use("/api/v1/course",courseroutes);
 app.use("/api/v1/payment",paymentroutes);
+app.use("/api/v1/reach", contactUsRoute);
 
 
 

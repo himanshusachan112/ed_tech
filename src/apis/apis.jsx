@@ -49,3 +49,9 @@ export const paymentroutes={
     VERIFYPAYMENT_API:BASE_URL+"/payment/verifypayment",
     SENTPAYMENTSUCCESSEMAIL_API:BASE_URL+"/payment/paymentsuccessemail",
 }
+
+
+export const contactusEndpoint={
+    CONTACT_US_API: BASE_URL + "/reach/contact"
+}
+
