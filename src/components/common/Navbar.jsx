@@ -35,7 +35,7 @@ const Navbar = () => {
   return (
     <div className='bg-black p-2 flex flex-row justify-between border-b-[1px] border-b-yellow-400'>
       <div>
-        <Link to="/"><img src={edupulses} className='absolute top-[-5px]  w-[10%] h-[8%]' onClick={()=>{setcurrenttab("Home")}} alt=''></img></Link>
+        <Link to="/"><img src={""} className='absolute top-[-5px]  w-[10%] h-[8%]' onClick={()=>{setcurrenttab("Home")}} alt=''></img></Link>
       </div>
       <div className='text-white flex flex-row gap-3'>
         {NavbarLinks.map((sublink,index)=>(

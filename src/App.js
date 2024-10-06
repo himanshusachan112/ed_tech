@@ -90,6 +90,7 @@ function App() {
                   </>)}
 
                   {profile?.accounttype===variables.instructor && (<>
+                    console.log("aadd courses pe aaya");
                     <Route path='/dashboard/instructor/add-courses'  element={<Addcourses/>}/>
                     <Route path='/dashboard/instructor/dashboard' element={<Instructordashboard/>}/>
                     <Route path='/dashboard/instructor/my-courses' element={<Mycourses/>}/>
