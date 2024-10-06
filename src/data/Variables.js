@@ -1,9 +1,5 @@
 export const variables={
     student:"Student",
-    instructor:"Instructor",
-    
+    alumni:"Alumni"
 }
 
-export const adminvariables={
-    admin:"Admin"
-}

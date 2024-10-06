@@ -23,7 +23,7 @@ const contactUsRoute = require("./routes/Contact");
 app.use(express.json())
 app.use(cookieparser());
 app.use(cors({
-    origin:"https://edupulses.netlify.app",
+    origin:"https://yescodies.netlify.app",
     // origin:"http://localhost:3000",
     credentials:true,
 }))
