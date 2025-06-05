@@ -13,7 +13,7 @@ export function createcourse(formdata,token){
                     "Content-Type": "multipart/form-data",
                     Authorization: `Bearer ${token}`,
                 })
-            console.log("CREATECOURSE_API RESPONSE",response);
+            // console.log("CREATECOURSE_API RESPONSE",response);
             if(!response.data.success){
                 throw new Error(response.data.message)
             }
@@ -24,7 +24,7 @@ export function createcourse(formdata,token){
             toast.dismiss(toastid);
         }
         catch(err){
-            console.log("CREATECOURSE RESPONSE API ERROR",err);
+            // console.log("CREATECOURSE RESPONSE API ERROR",err);
             toast.error(err.message);
             toast.dismiss(toastid);
 

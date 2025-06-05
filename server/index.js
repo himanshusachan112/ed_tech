@@ -5,8 +5,9 @@ PORT=process.env.PORT || 4000
 const cors=require("cors");
 const fileupload=require("express-fileupload");
 const cookieparser=require("cookie-parser");
+
 //importing functions
-const {databaseConnect}=require("./config/ConnectToDatabase");
+const {databaseConnect_mongodb, databaseConnect_prostesql}=require("./config/ConnectToDatabase");
 const {cloudinaryConnect}=require("./config/ConnectToCloudinary");
 
 //importing all the routes
@@ -16,6 +17,8 @@ const categoryroutes=require("./routes/category");
 const courseroutes=require("./routes/course");
 const paymentroutes=require("./routes/Payment");
 const contactUsRoute = require("./routes/Contact");
+const playlist_earning=require("./routes/Playlist_earnings");
+
 
 
 
@@ -23,7 +26,7 @@ const contactUsRoute = require("./routes/Contact");
 app.use(express.json())
 app.use(cookieparser());
 app.use(cors({
-    origin:"https://yescodies.netlify.app",
+    origin:"https://code-rep.netlify.app",
     // origin:"http://localhost:3000",
     credentials:true,
 }))
@@ -33,7 +36,9 @@ app.use(fileupload({
 }))
 
 //connecting to database.
-databaseConnect();
+databaseConnect_mongodb();
+databaseConnect_prostesql();
+
 //connecting to cloudinary.
 cloudinaryConnect();
 
@@ -44,7 +49,7 @@ app.use("/api/v1/category",categoryroutes);
 app.use("/api/v1/course",courseroutes);
 app.use("/api/v1/payment",paymentroutes);
 app.use("/api/v1/reach", contactUsRoute);
-
+app.use("/api/v1/playlist_earning", playlist_earning);
 
 
 
@@ -62,3 +67,4 @@ app.listen(PORT,()=>{
     console.log(`server is running at port ${PORT}`)
 })
 
+ 

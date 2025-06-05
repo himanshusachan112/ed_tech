@@ -31,6 +31,8 @@ import Catalogpage from './pages/Catalogpage';
 import CoursePage from './pages/CoursePage';
 import Studentroute from './routes/Studentroute';
 import Courseplayer from './pages/Courseplayer';
+import PlaylistPage from './pages/PlaylistPage';
+import EarningPage from './pages/EarningPage';
 
 
 function App() {
@@ -44,7 +46,7 @@ function App() {
       <Navbar/>
 
       <Routes>
-        <Route path='/' element={<Homepage/>}/>
+        <Route path='/home' element={<Homepage/>}/>
         <Route path='/about' element={<Aboutpage/>}/>
         <Route path='/contact' element={<Contactpage/>}/>
         <Route path='/catalog/:categoryname' element={<Catalogpage/>}/>
@@ -75,12 +77,22 @@ function App() {
                                                                   <Courseplayer/>
                                                                 </Studentroute>}/>
 
+        <Route path='/my-playlists' element={<Privateroute>
+                                              <PlaylistPage/>
+                                            </Privateroute>} />
+
+        <Route path='/my-earnings' element={<Privateroute>
+                                              <EarningPage/>
+                                            </Privateroute>} />
+
         <Route  element={<Privateroute>
                           <Dashboard/>
                         </Privateroute>}>
 
                     <Route path='/dashboard/my-profile' element={<Myprofile/>}/>
                     <Route path='/dashboard/my-settings' element={<Mysettings/>}/>
+                    
+                    
                     
 
                   {profile?.accounttype===variables.student && (<>

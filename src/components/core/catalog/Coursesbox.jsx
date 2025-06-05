@@ -1,82 +1,85 @@
 import React from 'react'
-// Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react"
-import {Pagination,FreeMode,Navigation,Autoplay} from "swiper/modules"
-import ReactStars from "react-rating-stars-component";
-import GetAvgRating from '../../../utils/Averagerating';
+import { Pagination, FreeMode, Navigation, Autoplay } from "swiper/modules"
+import ReactStars from "react-rating-stars-component"
+import GetAvgRating from '../../../utils/Averagerating'
+import { useNavigate } from 'react-router-dom'
 
-// Import Swiper styles
+// Swiper styles
 import "swiper/css"
 import "swiper/css/free-mode"
 import "swiper/css/pagination"
-import 'swiper/css/navigation';
-import { useNavigate } from 'react-router-dom'
+import "swiper/css/navigation"
 
-const Coursesbox = ({category}) => {
-
-
-    const navigate=useNavigate();
-    console.log("category is ",category)
+const Coursesbox = ({ category }) => {
+  const navigate = useNavigate()
 
   return (
-    <div className='w-full'>
-        <div className='text-3xl text-slate-600'>
-            {category.name}
-        </div>
-        <div className=' bg-slate-600 border-2 border-yellow-300 mt-8 p-3 '>
-            <Swiper 
-                slidesPerView={4}
-                spaceBetween={25}
-                modules={[FreeMode,Pagination,Autoplay,Navigation]}
-                loop={true}
-                autoplay={{
-                delay: 2500,
-                disableOnInteraction: false,
-                }}
-                pagination={{
-                clickable: true,
-                }}
-                navigation={true}
-                breakpoints={{
-                1024: {
-                slidesPerView: 3,
-                    },
-                }}   
-                className="mySwiper max-h-[30rem]">
+    <div className='w-full px-4 md:px-12 mb-12'>
+      <div className='text-2xl md:text-3xl text-yellow-400 font-bold mb-3'>
+        {category.name}
+      </div>
 
-            {category.courses.map((course,index)=>(
-                course.status==="Published" &&
-                <SwiperSlide key={index}>
-                    <div className='w-52 flex flex-col overflow-auto pb-6 '>
-                        <div>
-                           <div onClick={()=>navigate(`/course/${course._id}`)} className='w-52 h-52 relative'>
-                             <img src={course.thumbnail} alt='' className='w-52 h-52'/>
-                             <div className='absolute bg-blue-600 text-white right-2 top-2 px-1 rounded-md'>
-                                {course.price==0 && "Free"}
-                             </div>
-                             <div className='absolute bottom-0 left-11'>
-                                <ReactStars
-                                    count={5}
-                                    size={30}
-                                    edit={false}
-                                    activeColor="#ffd700"
-                                    value={GetAvgRating(course.ratingandreviews)}
-                                    
-                                    
-                                />
-                             </div>
-                           </div>
-                        </div>
-                        
-                        <div className='text-yellow-300 w-52' >
-                            {course.coursename}
-                        </div>          
+      <div className='bg-slate-700 border-2 border-yellow-300 p-4 rounded-md'>
+        <Swiper
+          slidesPerView={1}
+          spaceBetween={20}
+          modules={[FreeMode, Pagination, Autoplay, Navigation]}
+          loop={true}
+          autoplay={{ delay: 2500, disableOnInteraction: false }}
+          pagination={{ clickable: true }}
+          navigation={true}
+          breakpoints={{
+            640: { slidesPerView: 1 },
+            768: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+            1280: { slidesPerView: 4 },
+          }}
+          className="mySwiper"
+        >
+          {category.courses.map((course, index) =>
+            course.status === "Published" && (
+              <SwiperSlide key={index}>
+                <div
+                  onClick={() => navigate(`/course/${course._id}`)}
+                  className="cursor-pointer rounded-md overflow-hidden shadow-md bg-slate-800 hover:shadow-yellow-500 transition-shadow duration-300"
+                >
+                  {/* Course Thumbnail */}
+                  <div className="relative h-48 w-full">
+                    <img
+                      src={course.thumbnail}
+                      alt={course.coursename}
+                      className="object-cover w-full h-full"
+                    />
+                    {/* Price tag */}
+                    {course.price === 0 && (
+                      <div className="absolute top-2 right-2 bg-blue-600 text-white text-sm px-2 py-1 rounded">
+                        Free
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Course Info */}
+                  <div className="p-2 flex flex-col gap-2 text-white">
+                    <div className="text-yellow-300 font-semibold line-clamp-2 h-[3rem]">
+                      {course.coursename}
                     </div>
-                </SwiperSlide>
-            ))}
-
-            </Swiper>
-        </div>
+                    <div className="flex items-center justify-center">
+                      <ReactStars
+                        count={5}
+                        size={24}
+                        edit={false}
+                        activeColor="#ffd700"
+                        value={GetAvgRating(course.ratingandreviews)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </SwiperSlide>
+            )
+          )}
+        </Swiper>
+      </div>
     </div>
   )
 }

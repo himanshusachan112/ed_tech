@@ -1,10 +1,10 @@
 export const NavbarLinks = [
     {
       title: "Home",
-      path: "/",
+      path: "/home",
     },
     {
-      title: "Catalog",
+      title: "Courses",
       // path: '/catalog',
     },
     {

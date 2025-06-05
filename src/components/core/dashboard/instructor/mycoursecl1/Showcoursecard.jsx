@@ -1,53 +1,61 @@
 import React from 'react'
 import Custombutton from '../../../../common/Custombutton'
-import { setstep,setcourse,seteditcourse } from '../../../../../slices/Courseslice'
+import { setstep, setcourse, seteditcourse } from '../../../../../slices/Courseslice'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { deletecourse, getaddcourses } from '../../../../../services/Courseservices'
+import { deletecourse } from '../../../../../services/Courseservices'
 
-const Showcoursecard = ({course,setinscourses,inscourses}) => {
+const Showcoursecard = ({ course, setinscourses, inscourses }) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.Auth);
 
-    const navigate=useNavigate();
-    const dispatch=useDispatch();
-    const {token}=useSelector((state)=>state.Auth);
+  const editcoursehandler = () => {
+    dispatch(setcourse(course));
+    dispatch(seteditcourse(true));
+    dispatch(setstep(1));
+    navigate('/dashboard/instructor/add-courses');
+  }
 
-    const editcoursehandler=()=>{
-        dispatch(setcourse(course));
-        dispatch(seteditcourse(true));
-        dispatch(setstep(1));
-        navigate('/dashboard/instructor/add-courses');
-    }
-
-    const coursedeletehandler=async()=>{
-        dispatch(deletecourse(course._id,token,inscourses,setinscourses));
-    }
-
+  const coursedeletehandler = async () => {
+    dispatch(deletecourse(course._id, token, inscourses, setinscourses));
+  }
 
   return (
-    <div className='border-[2px] flex flex-row justify-between border-gray-400 mt-1'>
-        <div className='pl-[1px]'>
-            {/* image */}
-            <img src={course.thumbnail} alt='' className=' p-1 h-32 w-32 rounded-sm object-cover'/>
-        </div>
-        <div className='text-slate-500'>
-            {/* details */}
-            <div>{`CATEGORY ${course.category.name}`}</div>
-            <div>{`DESCRIPTION ${course.coursedescription}`}</div>
-            <div>{`NAME ${course.coursename}`}</div>
-            <div>{`CREATED AT ${course.createdat}`}</div>
-            <div>{`PRICE ${course.price}`}</div>
-        </div>
-        <div className='ml-1'>
-            {/* buttons */}
-            <Custombutton text={"EDIT"} styles={"bg-yellow-300 text-black mt-1 mr-1"} fun={editcoursehandler}/>
-            {course.status!=="Published" && 
-            <>
-            
-            <Custombutton text={"DELETE"} styles={"bg-red-700 text-white mt-1 mr-1"} fun={coursedeletehandler}/>
-            </>}
-        </div>
+    <div className='border-2 border-gray-400 rounded-md p-2 mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
+      
+      {/* Image */}
+      <img 
+        src={course.thumbnail} 
+        alt={course.coursename} 
+        className='h-32 w-full sm:w-32 rounded-sm object-cover'
+      />
+
+      {/* Details */}
+      <div className='text-slate-500 flex-1 text-sm space-y-1'>
+        <div><span className='font-semibold'>Category:</span> {course.category.name}</div>
+        <div><span className='font-semibold'>Description:</span> {course.coursedescription}</div>
+        <div><span className='font-semibold'>Name:</span> {course.coursename}</div>
+        <div><span className='font-semibold'>Created At:</span> {new Date(course.createdat).toLocaleDateString()}</div>
+        <div><span className='font-semibold'>Price:</span> {course.price}</div>
+      </div>
+
+      {/* Buttons */}
+      <div className='flex flex-row gap-2 flex-wrap'>
+        <Custombutton 
+          text="EDIT" 
+          styles="bg-yellow-300 text-black"
+          fun={editcoursehandler} 
+        />
+        {course.status !== "Published" && (
+          <Custombutton 
+            text="DELETE" 
+            styles="bg-red-700 text-white" 
+            fun={coursedeletehandler} 
+          />
+        )}
+      </div>
     </div>
-    
   )
 }
 

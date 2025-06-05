@@ -49,7 +49,7 @@ exports.createcategory=async (req,res)=>{
 exports.showallcategory=async (req,res)=>{
     try{
         const category=await Category.find();
-        console.log("cataegory page data=>",category);
+        // console.log("cataegory page data=>",category);
         res.json({
             success:true,
             message:"Fetched Category Details Successfully",
@@ -71,7 +71,7 @@ exports.updatecategory=async (req,res)=>{
     try{
         console.log("updating category started")
         const {id,accounttype}=req.user;
-        console.log("one")
+        // console.log("one")
         const {name,description,catid}=req.body;
         if(!name || !description){
             return res.json({
@@ -79,9 +79,9 @@ exports.updatecategory=async (req,res)=>{
                 message:"all fields are required"
             })
         }
-        console.log("ckeckign user stared")
+        // console.log("ckeckign user stared")
         const checkuser=await User.findOne({_id:id,accounttype:accounttype})
-        console.log(checkuser);
+        // console.log(checkuser);
         if(!checkuser){
             return res.json({
                 success:false,
@@ -92,7 +92,7 @@ exports.updatecategory=async (req,res)=>{
         const category=await Category.findByIdAndUpdate(catid,{
             name,description
         },{new:true});
-        console.log(category);
+        // console.log(category);
         if(!category){
             return res.json({
                 success:false,

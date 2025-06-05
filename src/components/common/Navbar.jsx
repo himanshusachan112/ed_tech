@@ -1,88 +1,101 @@
 import React, { useEffect, useState } from 'react'
-import edupulses from "../../assets/Logo/edupulses.webp"
+import logo from "../../assets/Logo/code-reps.png"
 import { NavbarLinks } from '../../data/navbar-links'
-import { Link } from 'react-router-dom'
-import {IoIosArrowDropdownCircle} from 'react-icons/io'
-import { FaShoppingCart } from "react-icons/fa";
+import { Link, useLocation } from 'react-router-dom'
+import { IoIosArrowDropdownCircle } from 'react-icons/io'
+import { FaShoppingCart, FaAlignJustify } from "react-icons/fa"
 import { useSelector } from 'react-redux'
 import { variables } from '../../data/Variables'
 import Profiledropdown from './Profiledropdown'
 import { apiConnector } from '../../utils/Apiconnecter'
 import { categoryroutes } from '../../apis/apis'
+import Homesidebar from './Homesidebar'
 
 const Navbar = () => {
-  const [currenttab,setcurrenttab]=useState('Home');
-  const [category,setcategory]=useState([]);
-  const {token,userdata}=useSelector((state)=>state.Auth);
+  const location = useLocation()
+  const [sidebar, setSidebar] = useState(false)
+  const [category, setCategory] = useState([])
+  const { token, userdata } = useSelector((state) => state.Auth)
 
-  const fetchcategory=async ()=>{
-    try{
-      const response=await apiConnector("GET",categoryroutes.FETCHCATEGORY_API);
-      console.log("FETCH CATEGORY API RESPONSE=>",response);
-      setcategory(response.data.data);
-    }
-    catch(err){
-      console.log("FETCH CATEGORY API ERROR=>",err);
+  const fetchCategory = async () => {
+    try {
+      const response = await apiConnector("GET", categoryroutes.FETCHCATEGORY_API)
+      setCategory(response.data.data)
+    } catch (err) {
+      console.error("FETCH CATEGORY API ERROR =>", err)
     }
   }
 
-  useEffect(()=>{
-    
-    fetchcategory();
-
-  },[])
+  useEffect(() => {
+    fetchCategory()
+  }, [])
 
   return (
-    <div className='bg-black p-2 flex flex-row justify-between border-b-[1px] border-b-yellow-400'>
-      <div>
-        <Link to="/"><img src={""} className='absolute top-[-5px]  w-[10%] h-[8%]' onClick={()=>{setcurrenttab("Home")}} alt=''></img></Link>
-      </div>
-      <div className='text-white flex flex-row gap-3'>
-        {NavbarLinks.map((sublink,index)=>(
-          sublink.title==="Catalog" ? (
-            <div key={index} onClick={()=>{setcurrenttab(`${sublink.title}`)}} className={`${sublink.title===currenttab?"text-yellow-300":""} flex flex-row group`}>
-              <div>{sublink.title}</div>
-              <div className='mt-1.5'><IoIosArrowDropdownCircle/></div>
-              <div className={ `absolute z-20 invisible group-hover:visible `}>
-                <div className='w-[20px] h-[20px] rotate-45 bg-yellow-500 mt-10 ml-5'>
-                  
-                </div>
-                <div className='bg-yellow-500 absolute w-[200px] mt-[-10px] text-black p-2'>
-                  {category.length!==0 && (<div>
-                    {category.map((sublink,index)=>(<div key={index}><Link to={`/catalog/${sublink.name.split(" ").join("-")}`}>{sublink.name}</Link></div>))}
-                    {/* link is yet to edit */}
-                  </div>)}
-                </div>
-              </div>
-        
+    <>
+      <div className='bg-black flex justify-between items-center border-b border-yellow-400 relative z-30'>
+        {/* Sidebar Toggle & Logo */}
+        <div className='flex items-center gap-3'>
+          <FaAlignJustify className='text-white text-xl cursor-pointer' onClick={() => setSidebar(!sidebar)} />
+          <Link to="/home" onClick={() => setSidebar(false)}>
+            <img src={logo} alt='Logo' className='w-[130px]' />
+          </Link>
+        </div>
 
-            </div>):(
-            <div key={index} onClick={()=>{setcurrenttab(`${sublink.title}`)}} className={`${sublink.title===currenttab?"text-yellow-300":""}`}>
-              <Link to={sublink.path}><div>{sublink.title}</div></Link>
-            </div>)
-        ))}
-      </div>
-      <div >
-        {token===null ? (
-          <div className='flex flex-row gap-2'>
-            <Link to="/login"><button className='bg-slate-500 rounded-sm p-1 text-white' >Login</button></Link>
-            <Link to="/signup"><button className='bg-slate-500 rounded-sm p-1 text-white'>SignUp</button></Link>
-          </div>): userdata?.accounttype===variables.student ? (
-            <div>
-              <div>
-                <FaShoppingCart className='text-yellow-500'/>
-                {/* managing number of items still left */}
+        {/* Center Nav Links */}
+        <div className='flex gap-6 text-white items-center relative'>
+          {NavbarLinks.map((sublink, index) => (
+            sublink.title === "Courses" ? (
+              <div key={index} className='relative group cursor-pointer'>
+                <div className='flex items-center gap-1'>
+                  <span className='hover:text-yellow-400'>Courses</span>
+                  <IoIosArrowDropdownCircle className='mt-[2px]' />
+                </div>
+                {/* Dropdown */}
+                <div className='absolute left-0 top-8 bg-yellow-500 text-black p-2 rounded shadow-md scale-0 group-hover:scale-100 transition-transform duration-200 origin-top min-w-[200px] z-40'>
+                  {category.map((item, idx) => (
+                    <Link
+                      key={idx}
+                      to={`/catalog/${item.name.split(" ").join("-")}`}
+                      className='block px-2 py-1 hover:bg-yellow-300 rounded'
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
               </div>
-              <div>
-                <Profiledropdown/>
-              </div>
-            </div>):(
-              <div>
-                <Profiledropdown/>
-              </div>)}
+            ) : (
+              <Link key={index} to={sublink.path} className={`hover:text-yellow-300`}>
+                {sublink.title}
+              </Link>
+            )
+          ))}
+        </div>
+
+        {/* Right Side Auth/Profile */}
+        <div className='flex items-center gap-3'>
+          {!token ? (
+            <>
+              <Link to="/login">
+                <button className='bg-slate-600 px-3 py-1 rounded text-white'>Login</button>
+              </Link>
+              <Link to="/signup">
+                <button className='bg-slate-600 px-3 py-1 rounded text-white'>Sign Up</button>
+              </Link>
+            </>
+          ) : userdata?.accounttype === variables.student ? (
+            <>
+              <FaShoppingCart className='text-yellow-400 text-xl cursor-pointer' />
+              <Profiledropdown />
+            </>
+          ) : (
+            <Profiledropdown />
+          )}
+        </div>
       </div>
 
-    </div>
+      {/* Sidebar */}
+      {sidebar && <Homesidebar />}
+    </>
   )
 }
 

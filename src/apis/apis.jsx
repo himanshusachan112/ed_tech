@@ -1,4 +1,3 @@
-import { FaBackward } from "react-icons/fa"
 
 const BASE_URL=process.env.REACT_APP_BASE_URL
 //user routes apis
@@ -55,3 +54,9 @@ export const contactusEndpoint={
     CONTACT_US_API: BASE_URL + "/reach/contact"
 }
 
+export const playlist_earning={
+    CREATE_PLAYLIST: BASE_URL + "/playlist_earning/createplaylist",
+    GET_PLAYLIST : BASE_URL + "/playlist_earning/getplaylist",
+    UPLOAD_VIDEO : BASE_URL + "/playlist_earning/uploadvideo", 
+    GET_PAGINATED_VIDEOS : BASE_URL + "/playlist_earning/getPaginatedVideos"
+}

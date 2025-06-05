@@ -9,6 +9,7 @@ const {signuptemplate}=require("../mailtemplates/Signup")
 const {forgotpasswordtemplate}=require("../mailtemplates/ForgotpasswordLink");
 const {mailsender}=require("../utils/SendMail");
 require("dotenv").config();
+const {pool}=require("../config/ConnectToDatabase");
 
 //send otp logic
 exports.sendotp=async (req,res)=>{
@@ -64,13 +65,14 @@ exports.sendotp=async (req,res)=>{
 exports.signup=async (req,res)=>{
     try{
         const {firstname,lastname,email,password,confirmpassword,accounttype,otp}=req.body;
-        console.log(firstname,lastname,password,email,confirmpassword,accounttype,otp)
+        // console.log(firstname,lastname,password,email,confirmpassword,accounttype,otp)
         if(!firstname||!lastname|| !email ||!password || !confirmpassword|| !accounttype ||!otp){
             return res.json({
                 success:false,
                 message:"All fields are required",
             })
         }
+        
         const checkuser=await User.findOne({email});
         if(checkuser){
             return res.json({
@@ -85,18 +87,25 @@ exports.signup=async (req,res)=>{
             })
         }
         const latestotp=await Otp.find({email}).sort({cretedat:"desc"}).limit(1);
-        console.log("laeeetest ot is ==============================:",latestotp);
-        console.log(latestotp.otp)
-        console.log(otp)
-        console.log(latestotp.otp!==otp)
+        // console.log("laeeetest ot is ==============================:",latestotp);
+        // console.log(latestotp.otp)
+        // console.log(otp)
+        // console.log(latestotp.otp!==otp)
         if(!latestotp || latestotp[0].otp!==otp){
             return res.json({
                 success:false,
                 message:"OTP Not Found"
             })
         }
-        console.log("otp is verified");
+        // console.log("otp is verified");
         const hashedpassword=await bcrypt.hash(password,10);
+
+
+        //=================================== postgreSQL
+        await pool.query('BEGIN');
+        const pgres=await pool.query("insert into users (email) values ($1) returning *",[email]);
+        console.log(pgres);
+        //=============================
 
         const profiledetails=await Profile.create({
             gender:null,
@@ -115,6 +124,15 @@ exports.signup=async (req,res)=>{
             additionaldetails:profiledetails._id,
 
         })
+
+        //====================postgresql
+        await pool.query('COMMIT');
+
+        //==============================
+
+
+
+
         const mailresposne=await mailsender(email,"Signup Successfull",signuptemplate(accounttype));
         res.json({
             success:true,
@@ -124,9 +142,14 @@ exports.signup=async (req,res)=>{
 
 
 
-
+        // noTE= NOW EITHER BOTH ARE INSERTED (IN MONGO AND SQL) OR NONE.
     }
     catch(err){
+        console.log("error occoured whilte ")
+        //====================postgresql
+        await pool.query('ROLLBACK');
+
+        //==============================
         return res.json({
             success:false,
             message:err.message,
@@ -138,7 +161,7 @@ exports.signup=async (req,res)=>{
 //login logic
 exports.login=async (req,res)=>{
     try{
-        console.log(req.body);
+        // console.log(req.body);
         const {email,password}=req.body;
         if(!email||!password){
             return res.json({
@@ -147,7 +170,7 @@ exports.login=async (req,res)=>{
             })
         }
         const user=await User.findOne({email}).populate("additionaldetails").exec();
-        console.log(user);
+        // console.log(user);
         if(!user){
             return res.json({
                 success:false,
@@ -156,7 +179,7 @@ exports.login=async (req,res)=>{
         }
         //match the password and make the jwt token and send trouhgn cookie.
         if(await bcrypt.compare(password,user.hashedpassword)){
-            console.log("password matched successfull")
+            // console.log("password matched successfull")
             const payload={
                 email:user.email,
                 id:user._id,
@@ -166,7 +189,7 @@ exports.login=async (req,res)=>{
                 expiresIn:"2h",
             })
 
-            console.log("token is generated.")
+            // console.log("token is generated.")
             options={
                 expires:new Date(Date.now()+3*24*60*60*1000),
                 httpOnly:true,
@@ -215,7 +238,8 @@ exports.forgotpasswordtoken=async (req,res)=>{
         forgotpasswordlink:token,
         forgotpasswordlinkexpires:Date.now()+5*60*1000,
     })
-    const link=`https://yescodies.netlify.app/updatepassword/${token}`
+    const link=`https://code-rep.netlify.app/updatepassword/${token}`
+    // const link=`http://localhost:3000/updatepassword/${token}`
     const mailresposne=await mailsender(email,"Forgot Password Email",forgotpasswordtemplate(email,link));
 
     res.json({

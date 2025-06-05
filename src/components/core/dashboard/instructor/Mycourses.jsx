@@ -4,53 +4,53 @@ import { getaddcourses } from '../../../../services/Courseservices';
 import Showcoursecard from './mycoursecl1/Showcoursecard';
 
 const Mycourses = () => {
+  const { token } = useSelector((state) => state.Auth);
+  const dispatch = useDispatch();
+  const [type, setType] = useState("Draft");
+  const [inscourses, setInscourses] = useState([]);
 
-  const {token}=useSelector((state)=>state.Auth);
-  const dispatch=useDispatch();
-  const [type,settype]=useState("Draft");
-  const [inscourses,setinscourses]=useState([]);
-
-  const getinstructorcourses=async ()=>{
-    dispatch(getaddcourses(token,setinscourses));
+  const getInstructorCourses = async () => {
+    dispatch(getaddcourses(token, setInscourses));
   }
 
-  const drafthandler=()=>{
-    settype("Draft");
-  }
-
-  const publishhandler=()=>{
-    settype("Published");
-  }
-
-  useEffect(()=>{
-    getinstructorcourses();
-  },[])
+  useEffect(() => {
+    getInstructorCourses();
+  }, []);
 
   return (
-    <div className='bg-black w-full h-full p-3'>
-      <div className='text-slate-500 text-3xl'>My Courses</div>
-      <div className='flex flex-row gap-2 text-white mt-2 border-b-2 border-yellow-300'>
-        <div onClick={drafthandler} className={`${type==="Draft" ? "text-yellow-300":""}`}>Drafted</div>
-        <div onClick={publishhandler} className={`${type==="Published" ? "text-yellow-300":""}`}>Published</div>
+    <div className='bg-black w-full min-h-screen p-4'>
+      <h1 className='text-slate-500 text-3xl font-semibold mb-4'>My Courses</h1>
+
+      <div className='flex gap-6 text-white border-b-2 border-yellow-300 mb-4'>
+        <button
+          onClick={() => setType("Draft")}
+          className={`pb-2 border-b-4 cursor-pointer ${type === "Draft" ? "border-yellow-300 text-yellow-300" : "border-transparent hover:text-yellow-400"}`}
+        >
+          Drafted
+        </button>
+        <button
+          onClick={() => setType("Published")}
+          className={`pb-2 border-b-4 cursor-pointer ${type === "Published" ? "border-yellow-300 text-yellow-300" : "border-transparent hover:text-yellow-400"}`}
+        >
+          Published
+        </button>
       </div>
-      <div className='mt-2 border-[0.5px] border-yellow-800 '>
-        {inscourses.length ? 
-        (<div>
-          {type==="Draft" ? 
-          (<div>
-            {inscourses.filter((course)=>course.status===type).map((course)=>(
-              <Showcoursecard course={course} inscourses={inscourses} setinscourses={setinscourses} />
-            ))}
-          </div>):
-          <div>
-            {inscourses.filter((course)=>course.status===type).map((course)=>(
-                <Showcoursecard course={course} inscourses={inscourses} setinscourses={setinscourses} />
-              ))}
-          </div>}
-        </div>):
-        (<div className='text-white'>
-          No course have been Created yet
-        </div>)}
+
+      <div className='border border-yellow-800 rounded-md p-2 min-h-[200px]'>
+        {inscourses.length ? (
+          inscourses
+            .filter((course) => course.status === type)
+            .map((course) => (
+              <Showcoursecard
+                key={course.id || course._id}
+                course={course}
+                inscourses={inscourses}
+                setinscourses={setInscourses}
+              />
+            ))
+        ) : (
+          <p className='text-white text-center mt-10'>No courses have been created yet.</p>
+        )}
       </div>
     </div>
   )

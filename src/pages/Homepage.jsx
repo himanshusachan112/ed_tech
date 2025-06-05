@@ -1,183 +1,136 @@
-import React from 'react'
-import Footer from '../components/common/Footer'
-import { Link, useNavigate } from 'react-router-dom'
-import {FaArrowRight} from "react-icons/fa"
-import HighlightText from '../components/common/HighlightText'
-import Custombutton from '../components/common/Custombutton'
-import Banner from '../assets/Images/banner.mp4'
-import CodeBlocks from '../components/common/CodeBlocks'
-import TimelineSection from '../components/common/TimelineSection'
-import LearningLanguageSection from '../components/common/LearningLanguageSection'
-import InstructorSection from '../components/common/InstructorSection'
+import React, { useState } from 'react'
+import { useSelector } from 'react-redux';
+import Homepage_loggedin from '../components/core/HomePage/Homepage_loggedin';
+
+import { useEffect } from "react";
+import { motion } from "framer-motion";
+import { FaLaptopCode, FaReact, FaNodeJs, FaPython, FaJsSquare } from "react-icons/fa";
+import playbar from "../assets/Images/banner.mp4"
+import { Link } from 'react-router-dom';
+
+const codingImages = [
+  "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=600",
+  // "https://images.unsplash.com/photo-1581090700227-1e8e8e1b1d1e?auto=format&fit=crop&w=600&q=80",
+  // "https://cdn.pixabay.com/photo/2017/01/06/19/15/keyboard-1952011_1280.jpg",
+  "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=600",
+  "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80",
+  "https://cdn.pixabay.com/photo/2016/11/29/03/53/code-1869237_1280.jpg",
+  "https://images.pexels.com/photos/1181676/pexels-photo-1181676.jpeg?auto=compress&cs=tinysrgb&w=600",
+  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80",
+  "https://cdn.pixabay.com/photo/2015/09/05/21/51/computer-925521_1280.jpg",
+  "https://images.pexels.com/photos/270360/pexels-photo-270360.jpeg?auto=compress&cs=tinysrgb&w=600",
+];
+
+const Button = ({ children, className = "", ...props }) => (
+  <button
+    className={`bg-cyan-400 hover:bg-cyan-600 text-black font-semibold px-6 py-3 rounded-xl transition ${className}`}
+    {...props}
+  >
+    {children}
+  </button>
+);
 
 const Homepage = () => {
-  const navigate=useNavigate();
+
+  const { token } = useSelector((state) => state.Auth);
+  const icons = [
+      <FaLaptopCode />, <FaReact />, <FaNodeJs />, <FaPython />, <FaJsSquare />,
+    ];
+
   return (
-    <div className='bg-black'>
-      {/*Section1  */}
-      <div className='relative mx-auto flex flex-col w-11/12 max-w-maxContent items-center 
-      text-white justify-between'>
+    <>
+      {
+        token ? <Homepage_loggedin/> : <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white flex flex-col items-center justify-start p-6 space-y-10 overflow-y-auto">
+      <motion.div
+        className="flex flex-col items-center space-y-4 mt-4"
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+      >
+        <video
+          src={playbar}
+          autoPlay
+          alt="Video Playbar"
+          className="w-full max-w-xl rounded-xl shadow-xl"
+        />
+        <p className="text-lg text-center">Log in to access videos and enjoy interactive learning</p>
+      </motion.div>
 
-        <Link to={"/signup"}>
-            <div className=' group z-0 mt-16 p-1 mx-auto rounded-full bg-gray-800 font-bold text-gray-200
-            transition-all duration-200 hover:scale-95 w-fit'>
-                <div className='flex flex-row items-center gap-2 rounded-full px-10 py-[5px]
-                transition-all duration-200 group-hover:bg-gray-900'>
-                    <p>Become an Instructor</p>
-                    <FaArrowRight />
-                </div>
-            </div>
+      <motion.h1
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+        className="text-5xl font-bold text-center mt-10"
+      >
+        Welcome to the CODE REPS
+      </motion.h1>
 
-        </Link>
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1, duration: 1 }}
+        className="text-lg text-center"
+      >
+        Log in to access videos and become part of our tech community
+      </motion.p>
 
-        <div className='text-center text-4xl font-semibold mt-7'>
-            Empower Your Future with
-            <HighlightText text={"Coding Skills"} />
-        </div>
+      <motion.div
+        className="flex space-x-6 text-4xl"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          visible: {
+            transition: {
+              staggerChildren: 0.2,
+            }, 
+          },
+        }}
+      >
+        {icons.map((icon, index) => (
+          <motion.div
+            key={index}
+            className="hover:text-cyan-400"
+            whileHover={{ scale: 1.3 }}
+            whileTap={{ scale: 0.95 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 + index * 0.2 }}
+          >
+            {icon}
+          </motion.div>
+        ))}
+      </motion.div>
 
-        <div className=' mt-4 w-[90%] text-center text-lg font-bold text-gray-300'>
-            With our online coding courses, you can learn at your own pace, from anywhere in the world, and get access to a wealth of resources, including hands-on projects, quizzes, and personalized feedback from instructors. 
-        </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2 }}
+      >
+        <Button  variant="secondary" className="text-black font-semibold px-6 py-3 rounded-xl">
+          <Link to='/login'>Log In</Link>
+        </Button>
+      </motion.div>
 
-        <div className='flex flex-row gap-7 mt-8'>
-            <Custombutton text={"Learn More"} styles={"text-red-500 bg-yellow-300"} fun={()=>navigate("/signup")}/>
-
-            <Custombutton text={"Book a Demo"} styles={"text-yellow-300 bg-red-700"} fun={()=>navigate("/login")}/>
-        </div>
-
-        <div className='mx-3 my-12 shadow-blue-200'>
-            <video
-            muted
-            loop
-            autoPlay
-            >
-            <source  src={Banner} type="video/mp4" />
-            </video>
-        </div>
-
-        {/* Code Section 1 */}
-        <div>
-            <CodeBlocks 
-                position={"lg:flex-row"}
-                heading={
-                    <div className='text-4xl font-semibold'>
-                        Unlock Your
-                        <HighlightText text={"coding potential"}/>
-                        with our online courses
-                    </div>
-                }
-                subheading = {
-                    "Our courses are designed and taught by industry experts who have years of experience in coding and are passionate about sharing their knowledge with you."
-                }
-                ctabtn1={
-                    {
-                        btnText: "try it yourself",
-                        linkto: "/signup",
-                        active: true,
-                    }
-                }
-                ctabtn2={
-                    {
-                        btnText: "learn more",
-                        linkto: "/login",
-                        active: false,
-                    }
-                }
-
-                codeblock={`<<!DOCTYPE html>\n<html>\nhead><title>Example</title><linkrel="stylesheet"href="styles.css">\n/head>\n`}
-                codeColor={"text-yellow-300"}
-            />
-        </div>
-
-                {/* Code Section 2 */}
-        <div>
-            <CodeBlocks 
-                position={"lg:flex-row-reverse"}
-                heading={
-                    <div className='text-4xl font-semibold'>
-                        Unlock Your
-                        <HighlightText text={"coding potential"}/>
-                        with our online courses
-                    </div>
-                }
-                subheading = {
-                    "Our courses are designed and taught by industry experts who have years of experience in coding and are passionate about sharing their knowledge with you."
-                }
-                ctabtn1={
-                    {
-                        btnText: "try it yourself",
-                        linkto: "/signup",
-                        active: true,
-                    }
-                }
-                ctabtn2={
-                    {
-                        btnText: "learn more",
-                        linkto: "/login",
-                        active: false,
-                    }
-                }
-
-                codeblock={`<<!DOCTYPE html>\n<html>\nhead><title>Example</title><linkrel="stylesheet"href="styles.css">\n/head>\n`}
-                codeColor={"text-yellow-300"}
-            />
-        </div>
-
-            
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 py-12">
+        {codingImages.map((src, index) => (
+          <motion.img
+            key={index}
+            src={src}
+            alt={`Coding scene ${index + 1}`}
+            className="w-full h-64 object-cover rounded-2xl shadow-lg hover:scale-105 transition-transform duration-300"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: index * 0.1 }}
+          />
+        ))}
       </div>
-
-      {/*Section 2  */}
-      <div className='bg-pure-greys-5 text-gray-700'>
-            
-
-            <div className='mx-auto w-11/12 max-w-maxContent flex flex-col items-center justify-between gap-7'>
-
-                <div className='flex flex-row gap-5 mb-10 mt-[95px]'>
-                    <div className='text-4xl font-semibold w-[45%]'>
-                        Get the Skills you need for a
-                        <HighlightText text={"Job that is in demand"} />
-                    </div>
-
-                    <div className='flex flex-col gap-10 w-[40%] items-start'>
-                    <div className='text-[16px]'>
-                    The modern StudyNotion is the dictates its own terms. Today, to be a competitive specialist requires more than professional skills.
-                    </div>
-                    
-                    </div>
-
-                </div>
-                
-                
-
-                <TimelineSection />
-
-                <LearningLanguageSection />
-
-            </div>
-
-            
-
-      </div>
-
-
-      {/*Section 3 */}
-      <div className='w-11/12 mx-auto max-w-maxContent flex-col items-center justify-between gap-8 first-letter bg-gray-900 text-white'>
-
-            <InstructorSection />
-
-            <h2 className='text-center text-4xl font-semobold mt-10'>review from Other Learners</h2>
-            {/* Review Slider here */}
-            
-      </div>
-
-
-      {/*Footer */}
-      <div className='text-white'>
-      <Footer />
-      </div>
-   
-
     </div>
+        
+      }
+ 
+
+    </>
   )
 }
 
