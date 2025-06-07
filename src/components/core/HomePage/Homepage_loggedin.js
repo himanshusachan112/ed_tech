@@ -3,8 +3,10 @@ import HoverVideoPlayer from 'react-hover-video-player';
 import { apiConnector } from '../../../utils/Apiconnecter';
 import { playlist_earning } from '../../../apis/apis';
 import { useSelector } from 'react-redux';
+import Track_watchtime_player from './Track_watchtime_player';
 
 const Homepage_loggedin = () => {
+  const [videoid,setvideoid]=useState(null);
   const [videos, setVideos] = useState([]);
   const [filteredVideos, setFilteredVideos] = useState([]);
   const [page, setPage] = useState(1);
@@ -13,6 +15,7 @@ const Homepage_loggedin = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const loader = useRef(null);
   const { token } = useSelector((state) => state.Auth);
+
 
   const fetchVideos = async () => {
     try {
@@ -83,7 +86,10 @@ const Homepage_loggedin = () => {
           <div
             key={video.id}
             className="cursor-pointer overflow-hidden"
-            onClick={() => setFullscreenVideo(video.video_file)}
+            onClick={() => {
+              setFullscreenVideo(video.video_file);
+              setvideoid(video.id);
+            }}
           >
             <HoverVideoPlayer
               videoSrc={video.video_file}
@@ -114,14 +120,8 @@ const Homepage_loggedin = () => {
           className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center"
           onClick={() => setFullscreenVideo(null)}
         >
-          <video
-            src={fullscreenVideo}
-            controls
-            autoPlay
-            className="w-[90vw] h-[90vh]"
-            onClick={(e) => e.stopPropagation()}
-            onEnded={() => setFullscreenVideo(null)}
-          />
+
+          <Track_watchtime_player fullscreenVideo={fullscreenVideo} setFullscreenVideo={setFullscreenVideo} videoid={videoid} />
           <button
             onClick={() => setFullscreenVideo(null)}
             className="absolute top-5 right-6 text-white text-3xl font-bold"

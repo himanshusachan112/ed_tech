@@ -21,6 +21,7 @@ const PlaylistPage = () => {
         Authorization: `Bearer ${token}`,
       });
       const objarr = Object.values(response.data.data);
+      console.log(objarr)
       setExistingPlaylists(objarr);
     } catch (err) {
       console.error("Error fetching playlists:", err);

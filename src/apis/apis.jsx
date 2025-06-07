@@ -58,5 +58,7 @@ export const playlist_earning={
     CREATE_PLAYLIST: BASE_URL + "/playlist_earning/createplaylist",
     GET_PLAYLIST : BASE_URL + "/playlist_earning/getplaylist",
     UPLOAD_VIDEO : BASE_URL + "/playlist_earning/uploadvideo", 
-    GET_PAGINATED_VIDEOS : BASE_URL + "/playlist_earning/getPaginatedVideos"
+    GET_PAGINATED_VIDEOS : BASE_URL + "/playlist_earning/getPaginatedVideos",
+    SAVE_VIDEOWATCHTIME:BASE_URL + "/playlist_earning/savewatchtimevideo",
+    WITHDRAW_AMOUNT : BASE_URL + "/playlist_earning/withdraw_amount"
 }

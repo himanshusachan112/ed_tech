@@ -1,5 +1,9 @@
 const {pool}=require("../config/ConnectToDatabase");
 const {cloudinaryuploader}=require("../utils/cloudinaryuploader");
+const axios=require("axios");
+require("dotenv").config();
+const { v4: uuidv4 } = require('uuid');
+
 
 
 const createplaylist=async(req,res)=>{
@@ -222,4 +226,127 @@ const getPaginatedVideos=async (req,res)=> {
 }
 
 
-module.exports={createplaylist,getplaylist,uploadvideo, getPaginatedVideos};
+const savewatchtimevideo=async(req,res)=>{
+  try{
+    const {videoid, time}=req.body;
+    const response=await pool.query("update videos set watchtime=watchtime  + $1 where id=$2 returning *", [time,videoid]);
+    return res.json({
+      success:true,
+      message:"updated watchtime successfully",
+      data:response.rows
+    })
+  }
+  catch(err){
+    return res.json({
+      success:false,
+      message:"error occured whitle svaing watchtime"
+    })
+  }
+}
+
+// noe for making payouts to customeses. .................to be continued
+
+const AUTH = {
+  auth: {
+    username: process.env.RAZORPAY_KEY,
+    password: process.env.RAZORPAY_SECRET
+  }
+};
+
+const createContact = async (user) => {
+  const res = await axios.post(
+    'https://api.razorpay.com/v1/contacts',
+    {
+      name: user.name,
+      email: user.email,
+      contact: user.phone,
+      type: 'customer'
+    },
+    AUTH
+  );
+  return res.data.id;
+};
+
+
+const createVpaFundAccount = async (contact_id, vpa) => {
+  const res = await axios.post(
+    'https://api.razorpay.com/v1/fund_accounts',
+    {
+      contact_id,
+      account_type: 'vpa',
+      vpa: {
+        address: vpa // e.g. "himanshu@okaxis"
+      }
+    },
+    AUTH
+  );
+  return res.data.id;
+};
+
+
+const createPayout = async (fundAccountId,amount) => {
+  const res = await axios.post(
+    'https://api.razorpay.com/v1/payouts',
+    {
+      account_number: "7878780080316316",
+      fund_account_id: fundAccountId,
+      amount: amount,
+      currency: "INR",
+      mode: "UPI",
+      purpose: "refund",
+      queue_if_low_balance: true,
+    },
+    {
+      auth: {
+        username: process.env.RAZORPAY_KEY,
+        password: process.env.RAZORPAY_SECRET
+      },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Payout-Idempotency": "53cda91c-8f81-4e77-bbb9-7388f4ac6bf4"
+      }
+    }
+  );
+
+  return res.data;
+};
+
+
+
+const withdraw_amount=async(req,res)=>{
+  try{
+    const {email}=req.user;
+    const { name, phone , vpa ,amount} = req.body;
+    console.log(req.body);
+    const user = {
+      name: name,
+      email: email,
+      phone: phone
+    };
+
+    const contactId = await createContact(user);
+    console.log("first");
+    const fundAccountId = await createVpaFundAccount(contactId, vpa);
+    console.log("second");
+    const payout = await createPayout(fundAccountId, amount);
+
+    
+
+    res.json({ 
+      success: true, 
+      message:"withdrawl successfull",
+      data:payout });
+  }
+  catch(err){
+    console.log(err)
+    res.json({
+      success:false,
+      message:err
+    })
+  }
+}
+
+//==============================================================
+
+
+module.exports={createplaylist,getplaylist,uploadvideo, getPaginatedVideos, savewatchtimevideo,withdraw_amount};
