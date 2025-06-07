@@ -138,7 +138,7 @@ const EarningPage = () => {
                 <th className="py-3 px-4">Status</th>
               </tr>
             </thead>
-            <tbody>
+            {/* <tbody>
               {transactions.length === 0 ? (
                 <tr>
                   <td colSpan="3" className="text-center py-4 text-gray-500">No transactions found.</td>
@@ -152,7 +152,7 @@ const EarningPage = () => {
                   </tr>
                 ))
               )}
-            </tbody>
+            </tbody> */}
           </table>
         </div>
       </section>
