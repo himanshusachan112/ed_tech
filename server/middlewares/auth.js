@@ -2,6 +2,27 @@ const jwt=require("jsonwebtoken");
 require("dotenv").config();
 
 
+exports.socketauth=(socket,next)=>{
+    try{
+        // console.log(socket)
+        const token=socket?.handshake?.headers?.token || socket?.handshake?.auth?.token  ;
+        
+        if(!token){
+            throw new Error("error while authenicationg socket")
+        }
+        const decode=jwt.verify(token,process.env.JWT_SECRET);
+        socket.user=decode;
+        console.log("socket is authenticated")
+        next();
+    } 
+    catch(err){
+        next(new Error("Authentication error")); 
+        console.log(err)
+    } 
+
+}
+
+
 exports.auth=async (req,res,next)=>{
 
     try{

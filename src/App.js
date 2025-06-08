@@ -33,17 +33,21 @@ import Studentroute from './routes/Studentroute';
 import Courseplayer from './pages/Courseplayer';
 import PlaylistPage from './pages/PlaylistPage';
 import EarningPage from './pages/EarningPage';
+import { FaMessage } from 'react-icons/fa6';
+import Messagesection from './components/common/Messagesection';
 
 
 function App() {
   
   const {profile}=useSelector((state)=>state.Profile);
-  console.log("profile data is =>",profile)
+  // console.log("profile data is =>",profile)
 
   return (
     <div className="App">
     
       <Navbar/>
+      <Messagesection/>
+
 
       <Routes>
         <Route path='/' element={<Homepage/>}/>

@@ -62,3 +62,16 @@ export const playlist_earning={
     SAVE_VIDEOWATCHTIME:BASE_URL + "/playlist_earning/savewatchtimevideo",
     WITHDRAW_AMOUNT : BASE_URL + "/playlist_earning/withdraw_amount"
 }
+
+
+export const messagesroutes={
+    SENDREQUEST : BASE_URL + '/chatsection/sendRequest',
+    GETRECIEVED_PENDINGREQUEST : BASE_URL + '/chatsection/getRecivedPendingRequests',
+    ACCEPT_REQUEST : BASE_URL + '/chatsection/acceptRequest',
+    GETSEND_PENDINGREQUEST : BASE_URL + '/chatsection/getSentPendingRequests',
+    CREATE_GROUP : BASE_URL + '/chatsection/createGroup',
+    ADD_MEMBERGROUP : BASE_URL + '/chatsection/addMemberToGroup',
+    SEND_MESSAGE : BASE_URL + '/chatsection/sendMessage',
+    GETMESSAGE_BYCHATID : BASE_URL + '/chatsection/getMessagesByChatId',
+    GETUSER_CHATANDGROUPS : BASE_URL + '/chatsection/getUserChatsAndGroups',
+}
