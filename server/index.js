@@ -23,7 +23,6 @@ const io=new Server(server,{
     methods: ["GET", "POST"],
   },
 });
-app.set("io", io);
 const {socketauth}=require('./middlewares/auth');
 io.use(socketauth);
 
