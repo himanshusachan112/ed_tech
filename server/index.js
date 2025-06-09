@@ -17,8 +17,8 @@ const server=http.createServer(app);
 const {Server}=require("socket.io");
 const io=new Server(server,{
     cors: {
-    origin:"https://code-rep.netlify.app",
-    // origin:"http://localhost:3000",
+    // origin:"https://code-rep.netlify.app",
+    origin:"http://localhost:3000",
     credentials: true,
     methods: ["GET", "POST"],
   },
@@ -47,8 +47,9 @@ const chatsection=require('./routes/chatsection');
 app.use(express.json())
 app.use(cookieparser());
 app.use(cors({
-    origin:"https://code-rep.netlify.app",
-    // origin:"http://localhost:3000",
+    // origin:"https://code-rep.netlify.app",
+    origin:"http://localhost:3000",
+    transports: ['websocket'],
     credentials:true,
 }))
 app.use(fileupload({
