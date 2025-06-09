@@ -221,6 +221,10 @@ const MessageModal = ({ setmodal }) => {
     getmessages_handler();
     Socket.connect();
 
+    Socket.on("connect", () => {
+      console.log("Socket.IO Connected:", Socket.id);
+    });
+
     Socket.on('receive-message', (message)=>{
       console.log("reciveing messages in reald time");
       console.log(message);
@@ -235,6 +239,7 @@ const MessageModal = ({ setmodal }) => {
     return ()=>{
       Socket.disconnect();
       Socket.off("receive-message");
+      Socket.off('connect')
     }
 
   }, []);
