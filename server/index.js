@@ -17,13 +17,16 @@ const server=http.createServer(app);
 const {Server}=require("socket.io");
 const io=new Server(server,{
     cors: {
-    origin:"https://code-rep.netlify.app",
+    // origin:"https://code-rep.netlify.app",
+    origin:"http://localhost:3000",
     credentials: true,
     methods: ["GET", "POST"],
   },
 });
+app.set("io", io);
 const {socketauth}=require('./middlewares/auth');
 io.use(socketauth);
+
 //............................
 
 //importing functions
@@ -45,8 +48,8 @@ const chatsection=require('./routes/chatsection');
 app.use(express.json())
 app.use(cookieparser());
 app.use(cors({
-    origin:"https://code-rep.netlify.app",
-    // origin:"http://localhost:3000",
+    // origin:"https://code-rep.netlify.app",
+    origin:"http://localhost:3000",
     credentials:true,
 }))
 app.use(fileupload({
@@ -76,7 +79,7 @@ io.on('connection',(socket)=>{
     console.log(" socket connection is successfull"); 
 
     socket.on('send-message', (data,callback)=>{
-        // console.log(data);
+        console.log(data);
         send_receive_message(data,callback,io);
     })
  

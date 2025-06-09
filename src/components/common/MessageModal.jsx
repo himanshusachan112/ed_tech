@@ -28,14 +28,14 @@ const MessageModal = ({ setmodal }) => {
   const messagesubmithandler = (e) => {
     e.preventDefault();
     if(!newMessage){
-      // console.log("no message");
+      console.log("no message");
       return ;
     }
-    // console.log(newMessage);
+    console.log(newMessage);
     
     if(Socket.connected){
       Socket.emit('send-message', {content:newMessage, groupId, senderId : profile._id }, (response)=>{
-        // console.log(response)
+        console.log(response)
         if(response.success){
           console.log("message sent successfully", newMessage);
         }

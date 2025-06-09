@@ -5,16 +5,16 @@ const Message=require("../models/message");
 
 exports.send_receive_message=async(data,callback,io)=>{
     try{
-        // console.log(data)
+        console.log(data)
         const newMessage = await Message.create({
             content: data.content,
             chat: data.groupId,
             sender: data.senderId,
         });
         await newMessage.populate("sender", "firstname lastname email");
-        // console.log("done messge saving")
+        console.log("done messge saving")
         io.to(data.groupId).emit("receive-message",newMessage);
-        // console.log("sent to roomid", data.groupId)
+        console.log("sent to roomid", data.groupId)
 
         callback({
             success:true,
@@ -22,7 +22,7 @@ exports.send_receive_message=async(data,callback,io)=>{
         });
     }
     catch(err){
-        // console.error("Error saving message:", err);
+        console.error("Error saving message:", err);
         callback({ success: false, 
                    message: err.message 
         });
