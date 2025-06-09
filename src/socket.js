@@ -6,7 +6,6 @@ const URL = process.env.NODE_ENV === 'production' ?  'https://ed-tech-backend-4k
 
 export const Socket = io(URL, {
   autoConnect: false,
-  transports: ['websocket'],
   auth: {
     token: token
   },
