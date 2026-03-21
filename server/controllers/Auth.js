@@ -238,7 +238,7 @@ exports.forgotpasswordtoken=async (req,res)=>{
         forgotpasswordlink:token,
         forgotpasswordlinkexpires:Date.now()+5*60*1000,
     })
-    const link=`https://code-rep.netlify.app/updatepassword/${token}`
+    const link=`https://code-reps.netlify.app/updatepassword/${token}`
     // const link=`http://localhost:3000/updatepassword/${token}`
     const mailresposne=await mailsender(email,"Forgot Password Email",forgotpasswordtemplate(email,link));
 
