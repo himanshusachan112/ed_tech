@@ -52,7 +52,7 @@ const Navbar = () => {
                 </div>
                 {/* Dropdown */}
                 <div className='absolute left-0 top-8 bg-yellow-500 text-black p-2 rounded shadow-md scale-0 group-hover:scale-100 transition-transform duration-200 origin-top min-w-[200px] z-40'>
-                  {category.map((item, idx) => (
+                  {category?.map((item, idx) => (
                     <Link
                       key={idx}
                       to={`/catalog/${item.name.split(" ").join("-")}`}

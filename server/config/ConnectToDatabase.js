@@ -6,12 +6,12 @@
  const databaseConnect_mongodb=async ()=>{
     await mongoose.connect(process.env.MONGODB_URL,{
         useNewUrlParser:true,
-        useUnifiedTopology:true,
-    })
+        useUnifiedTopology:true, 
+    }) 
     .then(()=>{
         console.log("Mongodb database connection is successful");
     })
-    .catch((err)=>{
+    .catch((err)=>{  
         console.log("Mongodb database conncection faliled");
         console.error(err);
         process.exit(1);
