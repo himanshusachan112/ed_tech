@@ -8,26 +8,41 @@ const { v4: uuidv4 } = require('uuid');
 
 const createplaylist = async (req, res) => {
     try {
-        console.log("CONTROLLER HIT: createplaylist"); // DEBUG LOG
-        
-        const { email } = req.user; 
-        const thumbnail = req.files?.thumbnail; // Use optional chaining
-        const { name } = req.body;
+        // 1. Debugging: Check what is actually arriving in the console
+        console.log("Body:", req.body);
+        console.log("Files:", req.files);
 
-        if (!thumbnail || !name) {
-            return res.status(400).json({ success: false, message: "Missing fields" });
+        if (!req.files || !req.files.thumbnail) {
+            return res.status(400).json({
+                success: false,
+                message: "Thumbnail file is missing",
+            });
         }
 
-        const userResult = await pool.query(`SELECT id FROM users WHERE email = $1`, [email]);
+        const { email } = req.user;
+        const { name } = req.body;
+        const thumbnail = req.files.thumbnail;
 
+        if (!name) {
+            return res.status(400).json({
+                success: false,
+                message: "Playlist name is missing",
+            });
+        }
+
+        // 2. Database & Cloudinary logic
+        const userResult = await pool.query(`SELECT id FROM users WHERE email = $1`, [email]);
         if (userResult.rowCount === 0) {
-            return res.status(404).json({ success: false, message: "User not found in DB" });
+            return res.status(404).json({ success: false, message: 'User not found' });
         }
 
         const user_id = userResult.rows[0].id;
-        const uploadDetails = await cloudinaryuploader(thumbnail, process.env.FOLDER_NAME, 1000, 1000);
-        const thumbnailurl = uploadDetails.secure_url;
+        
+        // Upload to Cloudinary
+        const uploadResult = await cloudinaryuploader(thumbnail, process.env.FOLDER_NAME, 1000, 1000);
+        const thumbnailurl = uploadResult.secure_url;
 
+        // Save to DB
         const playlistResult = await pool.query(
             `INSERT INTO playlists (user_id, name, thumbnail_url) VALUES ($1, $2, $3) RETURNING *`,
             [user_id, name, thumbnailurl]
@@ -35,15 +50,15 @@ const createplaylist = async (req, res) => {
 
         res.status(201).json({
             success: true,
-            message: "playlist created",
+            message: "Playlist created successfully",
             data: playlistResult.rows
         });
 
     } catch (err) {
-        console.error("DETAILED ERROR:", err); // Look at your Render/Terminal logs for this!
-        res.status(500).json({ // CHANGED FROM 404 TO 500
+        console.error("CREATE_PLAYLIST_BACKEND_ERROR:", err);
+        res.status(500).json({
             success: false,
-            message: "Internal server error while creating playlist",
+            message: "Internal server error",
             error: err.message
         });
     }

@@ -33,13 +33,14 @@ const Playlist_modal = ({existingPlaylists, setexistingPlaylists, setmodal, hasp
       formdata.append("thumbnailImage", thumbnail); // Ensure key matches backend (e.g., "thumbnailImage")
       formdata.append("name", name);
 
+      // Remove "Content-Type": "multipart/form-data"
       const response = await apiConnector(
         "POST", 
         playlist_earning.CREATE_PLAYLIST, 
         formdata,
         {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
+          // ONLY pass the Authorization header
+          Authorization: `Bearer ${token}`, 
         }
       );
 
