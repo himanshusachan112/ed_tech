@@ -1,35 +1,29 @@
-const nodemailer = require("nodemailer");
+const SibApiV3Sdk = require('@getbrevo/brevo');
 require("dotenv").config();
 
 exports.mailsender = async (email, title, body) => {
     try {
-        let transporter = nodemailer.createTransport({
-            host: process.env.MAIL_HOST,
-            port: 587,           // Standard port for STARTTLS
-            secure: false,        // Use false for port 587; true for 465
-            auth: {
-                user: process.env.MAIL_USER,
-                pass: process.env.MAIL_PASS, // This MUST be an App Password if using Gmail
-            },
-            tls: {
-                // This prevents the connection from hanging on restricted cloud networks
-                rejectUnauthorized: false 
-            }
-        });
+        // 1. Initialize the API client
+        let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+        
+        // 2. Configure the API Key
+        let apiKey = apiInstance.authentications['apiKey'];
+        apiKey.apiKey = process.env.BREVO_API_KEY;
 
-        let info = await transporter.sendMail({
-            // It's best practice to include the email address in the 'from' field
-            from: `"CodeReps | NITASPACE" <${process.env.MAIL_USER}>`,
-            to: `${email}`,
-            subject: `${title}`,
-            html: `${body}`
-        });
+        // 3. Define the email content
+        let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+        sendSmtpEmail.subject = title;
+        sendSmtpEmail.htmlContent = body;
+        sendSmtpEmail.sender = { "name": "CodeReps", "email": process.env.MAIL_USER };
+        sendSmtpEmail.to = [{ "email": email }];
 
-        console.log("Email sent successfully: ", info.messageId);
-        return info;
+        // 4. Send the request
+        const result = await apiInstance.sendTransacEmail(sendSmtpEmail);
+        console.log("API Email sent successfully:", result.messageId);
+        return result;
+
     } catch (err) {
-        console.error("Nodemailer Error: ", err.message);
-        // Throw the error so the calling function knows the email failed
-        throw err; 
+        console.error("Brevo API Error:", err.response?.text || err.message);
+        throw err;
     }
-}
+};
