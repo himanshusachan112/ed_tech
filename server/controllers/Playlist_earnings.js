@@ -6,49 +6,46 @@ const { v4: uuidv4 } = require('uuid');
 
 
 
-const createplaylist=async(req,res)=>{
-    try{
-        console.log("comming")
-        const {id,email}=req.user;
-        const thumbnail=req.files.thumbnail;
-        const {name}=req.body;
+const createplaylist = async (req, res) => {
+    try {
+        console.log("CONTROLLER HIT: createplaylist"); // DEBUG LOG
+        
+        const { email } = req.user; 
+        const thumbnail = req.files?.thumbnail; // Use optional chaining
+        const { name } = req.body;
 
+        if (!thumbnail || !name) {
+            return res.status(400).json({ success: false, message: "Missing fields" });
+        }
 
+        const userResult = await pool.query(`SELECT id FROM users WHERE email = $1`, [email]);
 
-        // 1. Get user ID from email
-            const userResult = await pool.query(
-            `SELECT id FROM users WHERE email = $1`,
-            [email]
-            );
+        if (userResult.rowCount === 0) {
+            return res.status(404).json({ success: false, message: "User not found in DB" });
+        }
 
-            if (userResult.rowCount === 0) {
-            return res.status(404).json({ error: 'User not found' });
-            }
+        const user_id = userResult.rows[0].id;
+        const uploadDetails = await cloudinaryuploader(thumbnail, process.env.FOLDER_NAME, 1000, 1000);
+        const thumbnailurl = uploadDetails.secure_url;
 
-            const user_id = userResult.rows[0].id;
-            const thumbnailurl=(await cloudinaryuploader(thumbnail,process.env.FOLDER_NAME,1000,1000)).secure_url;
-
-            // 2. Insert playlist
-            const playlistResult = await pool.query(
+        const playlistResult = await pool.query(
             `INSERT INTO playlists (user_id, name, thumbnail_url) VALUES ($1, $2, $3) RETURNING *`,
             [user_id, name, thumbnailurl]
-            );
+        );
 
-            res.status(201).json({
-                success:true,
-                message:"playlist created",
-                data:playlistResult.rows
-            });
-        
-        
-    }
-    catch(err){
-        console.log(err);
-        res.status(404).json({
-            success:false,
-            message:"problem while creating playlist",
+        res.status(201).json({
+            success: true,
+            message: "playlist created",
+            data: playlistResult.rows
+        });
 
-        })
+    } catch (err) {
+        console.error("DETAILED ERROR:", err); // Look at your Render/Terminal logs for this!
+        res.status(500).json({ // CHANGED FROM 404 TO 500
+            success: false,
+            message: "Internal server error while creating playlist",
+            error: err.message
+        });
     }
 }
 
